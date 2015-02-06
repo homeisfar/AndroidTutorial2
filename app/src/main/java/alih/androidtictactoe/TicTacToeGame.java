@@ -20,7 +20,7 @@ public class TicTacToeGame {
 
     private char mBoard[] = {'1','2','3','4','5','6','7','8','9'};
     private static final String TAG = "TicTacToeGame";
-    private final int BOARD_SIZE = 9;
+    public static final int BOARD_SIZE = 9;
 
     public static final char HUMAN_PLAYER = 'X';
     public static final char COMPUTER_PLAYER = 'O';
@@ -57,7 +57,11 @@ public class TicTacToeGame {
 
 
         /** Clear the board of all X's and O's by setting all spots to OPEN_SPOT. */
-    public void clearBoard(){
+    public void clearBoard (){
+
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            mBoard[i] = OPEN_SLOT;
+        }
 
     }
     /** Set the given player at the given location on the game board.
@@ -66,8 +70,10 @@ public class TicTacToeGame {
     * @param player - The HUMAN_PLAYER or COMPUTER_PLAYER
     * @param location - The location (0-8) to place the move
     */
-    public void setMove(char player, int location){
 
+    public void setMove(char player, int location){
+        if (mBoard[location] == OPEN_SLOT)
+            mBoard[location] = player;
     }
 
     /**
@@ -132,7 +138,7 @@ public class TicTacToeGame {
      * to actually make the computer move to that location.
      * @return The best move for the computer to make (0-8).
      */
-    public void getComputerMove()
+    public int getComputerMove()
     {
         int move;
 
@@ -143,7 +149,7 @@ public class TicTacToeGame {
                 mBoard[i] = COMPUTER_PLAYER;
                 if (checkForWinner() == 3) {
                     Log.d(TAG, "Computer is moving to " + (i + 1));
-                    return;
+                    return i;
                 }
                 else
                     mBoard[i] = curr;
@@ -158,7 +164,7 @@ public class TicTacToeGame {
                 if (checkForWinner() == 2) {
                     mBoard[i] = COMPUTER_PLAYER;
                     Log.d(TAG, "Computer is moving to " + (i + 1));
-                    return;
+                    return i;
                 }
                 else
                     mBoard[i] = curr;
@@ -174,6 +180,7 @@ public class TicTacToeGame {
         Log.d(TAG, "Computer is moving to " + (move + 1));
 
         mBoard[move] = COMPUTER_PLAYER;
+        return move;
     }
 
 }
