@@ -4,11 +4,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 
 
 public class AndroidTicTacToe extends ActionBarActivity {
 
-private TicTacToeGame mGame;
+    private TicTacToeGame mGame;
+
+    // Buttons making up the game board
+    private Button mBoardButtons[];
+
+    // Text to be displayed
+    private TextView mInfotextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
