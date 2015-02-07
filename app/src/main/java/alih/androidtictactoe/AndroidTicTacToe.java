@@ -13,6 +13,7 @@ import android.widget.TextView;
 public class AndroidTicTacToe extends ActionBarActivity {
 
     private TicTacToeGame mGame;
+    private boolean mGameOver;
 
     // Buttons making up the game board
     private Button mBoardButtons[];
@@ -49,6 +50,8 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
     private void startNewGame (){
         mGame.clearBoard ();
+
+        mGameOver = false;
 
         // reset the board
         for (int i = 0; i < mBoardButtons.length; i++) {
@@ -93,7 +96,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
             this.location = location;
         }
         public void onClick(View view) {
-            if (mBoardButtons[location].isEnabled()) {
+            if (mBoardButtons[location].isEnabled() && !mGameOver) {
                 setMove(TicTacToeGame.HUMAN_PLAYER, location);
 
                 // If no winner yet, let the computer make a move
@@ -113,6 +116,8 @@ public class AndroidTicTacToe extends ActionBarActivity {
                     mInfoTextView.setText("You won!");
                 else
                     mInfoTextView.setText("Android won!");
+                if (winner > 0)
+                    mGameOver = true;
             }
         }
 
@@ -127,8 +132,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
             else
                 mBoardButtons[location].setTextColor(Color.rgb(200, 0, 0));
         }
-
     }
-
 
 }
