@@ -14,6 +14,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
     private TicTacToeGame mGame;
     private boolean mGameOver;
+    private boolean mFirstPlayer;
 
     // Buttons making up the game board
     private Button mBoardButtons[];
@@ -44,6 +45,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
         mInfoTextView = (TextView) findViewById (R.id.information);
 
         mGame = new TicTacToeGame ();
+        mFirstPlayer = false;
 
         startNewGame ();
 
@@ -55,6 +57,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
         mGame.clearBoard ();
 
         mGameOver = false;
+        mFirstPlayer = !mFirstPlayer;
 
         // reset the board
         for (int i = 0; i < mBoardButtons.length; i++) {
@@ -65,7 +68,24 @@ public class AndroidTicTacToe extends ActionBarActivity {
         mNewGameB.setOnClickListener (new NewGameClickListener());
 
         //Human goes first
-        mInfoTextView.setText("You go first");
+        mInfoTextView.setText(R.string.turn_human);
+
+        if (mFirstPlayer)
+        {
+            int move = mGame.getComputerMove();
+            setCMove(TicTacToeGame.COMPUTER_PLAYER, move);
+        }
+    }
+
+    private void setCMove(char player, int location) {
+
+        mGame.setMove(player, location);
+        mBoardButtons[location].setEnabled(false);
+        mBoardButtons[location].setText(String.valueOf(player));
+        if (player == TicTacToeGame.HUMAN_PLAYER)
+            mBoardButtons[location].setTextColor(Color.rgb(0, 200, 0));
+        else
+            mBoardButtons[location].setTextColor(Color.rgb(200, 0, 0));
     }
 
     @Override
@@ -117,7 +137,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
                 if (winner == 0) {
                     mInfoTextView.setText(R.string.turn_computer);
                     int move = mGame.getComputerMove();
-                    setMove(TicTacToeGame.COMPUTER_PLAYER, move);
+                    setMove (TicTacToeGame.COMPUTER_PLAYER, move);
                     winner = mGame.checkForWinner();
                 }
 
