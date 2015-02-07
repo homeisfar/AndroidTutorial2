@@ -17,6 +17,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
     // Buttons making up the game board
     private Button mBoardButtons[];
+    private Button mNewGameB;
 
     // Text to be displayed
     private TextView mInfoTextView;
@@ -37,6 +38,8 @@ public class AndroidTicTacToe extends ActionBarActivity {
         mBoardButtons[6] = (Button) findViewById (R.id.seven);
         mBoardButtons[7] = (Button) findViewById (R.id.eight);
         mBoardButtons[8] = (Button) findViewById (R.id.nine);
+        mNewGameB = (Button) findViewById(R.id.newGame);
+
 
         mInfoTextView = (TextView) findViewById (R.id.information);
 
@@ -59,18 +62,17 @@ public class AndroidTicTacToe extends ActionBarActivity {
             mBoardButtons[i].setEnabled (true);
             mBoardButtons[i].setOnClickListener (new ButtonClickListener(i));
         }
+        mNewGameB.setOnClickListener (new NewGameClickListener());
 
         //Human goes first
-        mInfoTextView.setText ("You go first");
+        mInfoTextView.setText("You go first");
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        menu.add("New Game");
         return true;
     }
 
@@ -83,39 +85,50 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startNewGame ();
             return true;
         }
+        else // This is super awful but I can't figure out the ID
+            startNewGame ();
 
         return super.onOptionsItemSelected (item);
     }
 
+    // New Game click. Can this be combined into the other click listener?
+    private class NewGameClickListener implements View.OnClickListener {
+        public void onClick (View view)
+        {
+            startNewGame();
+        }
+    }
     // Handles clicks on the game board buttons
     private class ButtonClickListener implements View.OnClickListener {
         int location;
-        public ButtonClickListener(int location) {
+        public ButtonClickListener (int location) {
             this.location = location;
         }
-        public void onClick(View view) {
+
+        public void onClick (View view) {
             if (mBoardButtons[location].isEnabled() && !mGameOver) {
                 setMove(TicTacToeGame.HUMAN_PLAYER, location);
 
                 // If no winner yet, let the computer make a move
                 int winner = mGame.checkForWinner();
                 if (winner == 0) {
-                    mInfoTextView.setText("It's Android's turn.");
+                    mInfoTextView.setText(R.string.turn_computer);
                     int move = mGame.getComputerMove();
                     setMove(TicTacToeGame.COMPUTER_PLAYER, move);
                     winner = mGame.checkForWinner();
                 }
 
                 if (winner == 0)
-                    mInfoTextView.setText("It's your turn.");
+                    mInfoTextView.setText(R.string.turn_human);
                 else if (winner == 1)
-                    mInfoTextView.setText("It's a tie!");
+                    mInfoTextView.setText(R.string.result_tie);
                 else if (winner == 2)
-                    mInfoTextView.setText("You won!");
+                    mInfoTextView.setText(R.string.result_human_wins);
                 else
-                    mInfoTextView.setText("Android won!");
+                    mInfoTextView.setText(R.string.result_computer_wins);
                 if (winner > 0)
                     mGameOver = true;
             }

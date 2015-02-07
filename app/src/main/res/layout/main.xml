@@ -84,4 +84,12 @@
         android:gravity="center_horizontal"
         android:text="info"
         android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/newGame"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
+        android:text="New Game"
+        android:textSize="24sp" />
+
 </LinearLayout>
