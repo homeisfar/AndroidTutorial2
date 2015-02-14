@@ -181,17 +181,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
             return true;
         }
 
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            startNewGame ();
-//            return true;
-//        }
-//        else // This is super awful but I can't figure out the ID
-//            startNewGame ();
-
-
-
         return super.onOptionsItemSelected (item);
     }
 
@@ -202,7 +191,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
             startNewGame();
         }
     }
-
 
     // Handles clicks on the game board buttons
     private class ButtonClickListener implements View.OnClickListener {
@@ -236,7 +224,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
                     mGameOver = true;
             }
         }
-
 
         private void setMove(char player, int location) {
 
