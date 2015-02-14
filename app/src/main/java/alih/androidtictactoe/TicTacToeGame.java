@@ -2,6 +2,10 @@ package alih.androidtictactoe;
 
 /**
  * Created by alih on 2/5/15.
+ *
+ * Edits to the game logic to make it compatible with Android
+ *
+ * Added difficulty options
  */
 
 /* TicTacToeConsole.java
@@ -11,12 +15,15 @@ package alih.androidtictactoe;
  * is X and the computer is O.
  */
 
-import java.util.InputMismatchException;
+
 import java.util.Random;
-import java.util.Scanner;
 import android.util.Log;
 
 public class TicTacToeGame {
+
+    public enum DifficultyLevel  {Easy, Medium, Expert}
+
+    private DifficultyLevel mDifficultyLevel = DifficultyLevel.Expert;
 
     private char mBoard[] = {'1','2','3','4','5','6','7','8','9'};
     private static final String TAG = "TicTacToeGame";
@@ -33,26 +40,6 @@ public class TicTacToeGame {
         // Seed the random number generator
         mRand = new Random();
 
-        char turn = HUMAN_PLAYER;    // Human starts first
-        int  win = 0;                // Set to 1, 2, or 3 when game is over
-
-        // Keep looping until someone wins or a tie
-//        while (win == 0)
-//        {
-//
-//            if (turn == HUMAN_PLAYER)
-//            {
-//                getUserMove();
-//                turn = COMPUTER_PLAYER;
-//            }
-//            else
-//            {
-//                getComputerMove();
-//                turn = HUMAN_PLAYER;
-//            }
-//
-//            win = checkForWinner();
-//        }
     }
 
 
@@ -62,18 +49,25 @@ public class TicTacToeGame {
         for (int i = 0; i < BOARD_SIZE; i++) {
             mBoard[i] = OPEN_SLOT;
         }
-
     }
+
     /** Set the given player at the given location on the game board.
     * The location must be available, or the board will not be changed.
     *
     * @param player - The HUMAN_PLAYER or COMPUTER_PLAYER
     * @param location - The location (0-8) to place the move
     */
-
     public void setMove(char player, int location){
         if (mBoard[location] == OPEN_SLOT)
             mBoard[location] = player;
+    }
+
+    public DifficultyLevel getDifficultyLevel() {
+        return mDifficultyLevel;
+    }
+
+    public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
+        mDifficultyLevel = difficultyLevel;
     }
 
     /**
@@ -142,40 +136,24 @@ public class TicTacToeGame {
     {
         int move;
 
-        // First see if there's a move O can make to win
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER) {
-                char curr = mBoard[i];
-                mBoard[i] = COMPUTER_PLAYER;
-                if (checkForWinner() == 3) {
-                    Log.d(TAG, "Computer is moving to " + (i + 1));
-                    return i;
-                }
-                else
-                    mBoard[i] = curr;
-            }
-        }
-
-        // See if there's a move O can make to block X from winning
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER) {
-                char curr = mBoard[i];   // Save the current number
-                mBoard[i] = HUMAN_PLAYER;
-                if (checkForWinner() == 2) {
-                    mBoard[i] = COMPUTER_PLAYER;
-                    Log.d(TAG, "Computer is moving to " + (i + 1));
-                    return i;
-                }
-                else
-                    mBoard[i] = curr;
-            }
-        }
-
-        // Generate random move
-        do
+        if (mDifficultyLevel == DifficultyLevel.Easy)
         {
-            move = mRand.nextInt(BOARD_SIZE);
-        } while (mBoard[move] == HUMAN_PLAYER || mBoard[move] == COMPUTER_PLAYER);
+            move = getRandomMove ();
+        }
+        else if (mDifficultyLevel == DifficultyLevel.Medium)
+        {
+            move = getBlockingMove ();
+            if (move == -1)
+                move = getRandomMove ();
+        }
+        else
+        {
+            move = getWinningMove ();
+            if (move == -1)
+                move = getBlockingMove ();
+            if (move == -1)
+                move = getRandomMove ();
+        }
 
         Log.d(TAG, "Computer is moving to " + (move + 1));
 
@@ -183,4 +161,52 @@ public class TicTacToeGame {
         return move;
     }
 
+    // Generate random move
+    int getRandomMove()
+    {
+        int move = -1;
+        do
+        {
+            move = mRand.nextInt(BOARD_SIZE);
+        } while (mBoard[move] == HUMAN_PLAYER || mBoard[move] == COMPUTER_PLAYER);
+        return move;
+    }
+
+    // First see if there's a move O can make to win
+    int getWinningMove()
+    {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER) {
+                char curr = mBoard[i];
+                mBoard[i] = COMPUTER_PLAYER;
+                if (checkForWinner() == 3)
+                {
+//                    Log.d(TAG, "Computer is moving to " + (i + 1));
+                    return i;
+                }
+                else
+                    mBoard[i] = curr;
+            }
+        }
+        return -1;
+    }
+
+    // See if there's a move O can make to block X from winning
+    int getBlockingMove()
+    {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER) {
+                char curr = mBoard[i];   // Save the current number
+                mBoard[i] = HUMAN_PLAYER;
+                if (checkForWinner() == 2) {
+                    mBoard[i] = COMPUTER_PLAYER;
+//                    Log.d(TAG, "Computer is moving to " + (i + 1));
+                    return i;
+                }
+                else
+                    mBoard[i] = curr;
+            }
+        }
+        return -1;
+    }
 }

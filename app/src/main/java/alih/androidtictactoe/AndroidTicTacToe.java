@@ -1,5 +1,8 @@
 package alih.androidtictactoe;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class AndroidTicTacToe extends ActionBarActivity {
@@ -15,6 +19,9 @@ public class AndroidTicTacToe extends ActionBarActivity {
     private TicTacToeGame mGame;
     private boolean mGameOver;
     private boolean mFirstPlayer;
+
+    static final int DIALOG_DIFFICULTY_ID = 0;
+    static final int DIALOG_QUIT_ID = 1;
 
     // Buttons making up the game board
     private Button mBoardButtons[];
@@ -77,6 +84,61 @@ public class AndroidTicTacToe extends ActionBarActivity {
         }
     }
 
+
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog = null;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        switch (id) {
+            case DIALOG_DIFFICULTY_ID:
+                builder.setTitle(R.string.difficulty_choose);
+                final CharSequence[] levels = {
+                        getResources().getString(R.string.difficulty_easy),
+                        getResources().getString(R.string.difficulty_medium),
+                        getResources().getString(R.string.difficulty_expert)};
+
+
+                // selected is the radio button that should be selected.
+
+                int selected = mGame.getDifficultyLevel().ordinal();
+
+                builder.setSingleChoiceItems(levels, selected,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                dialog.dismiss(); // Close dialog
+
+                                mGame.setDifficultyLevel(TicTacToeGame.DifficultyLevel.values()[item]);
+
+                                // Display the selected difficulty level
+                                Toast.makeText(getApplicationContext(), levels[item],
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                dialog = builder.create();
+
+                break;
+
+        case DIALOG_QUIT_ID:
+        // Create the quit confirmation dialog
+
+        builder.setMessage(R.string.quit_question)
+                .setCancelable(false)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        AndroidTicTacToe.this.finish();
+                    }
+                })
+                .setNegativeButton(R.string.no, null);
+        dialog = builder.create();
+
+        break;
+    }
+        return dialog;
+    }
+
+
+
+
     private void setCMove(char player, int location) {
 
         mGame.setMove(player, location);
@@ -92,7 +154,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        menu.add("New Game");
+//        menu.add("New Game");
         return true;
     }
 
@@ -103,13 +165,32 @@ public class AndroidTicTacToe extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.new_game)
+        {
             startNewGame ();
             return true;
         }
-        else // This is super awful but I can't figure out the ID
-            startNewGame ();
+        if (id == R.id.ai_difficulty)
+        {
+            showDialog (DIALOG_DIFFICULTY_ID);
+            return true;
+        }
+        if (id == R.id.quit)
+        {
+            showDialog (DIALOG_QUIT_ID);
+            return true;
+        }
+
+
+        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            startNewGame ();
+//            return true;
+//        }
+//        else // This is super awful but I can't figure out the ID
+//            startNewGame ();
+
+
 
         return super.onOptionsItemSelected (item);
     }
@@ -121,6 +202,8 @@ public class AndroidTicTacToe extends ActionBarActivity {
             startNewGame();
         }
     }
+
+
     // Handles clicks on the game board buttons
     private class ButtonClickListener implements View.OnClickListener {
         int location;
@@ -166,5 +249,4 @@ public class AndroidTicTacToe extends ActionBarActivity {
                 mBoardButtons[location].setTextColor(Color.rgb(200, 0, 0));
         }
     }
-
 }
