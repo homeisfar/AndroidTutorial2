@@ -20,5 +20,13 @@
         android:text="info"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/winstats"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="info"
+        android:textSize="20sp" />
 
 </LinearLayout>

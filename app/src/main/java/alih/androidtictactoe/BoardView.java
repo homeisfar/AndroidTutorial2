@@ -70,11 +70,11 @@ public class BoardView extends View {
         for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
             int col = i % 3;
             int row = i / 3;
-// Define the boundaries of a destination rectangle for the image
-            int yTopLeft = row * getBoardCellWidth();
-            int xTopLeft = col * getBoardCellHeight();
-            int yBottomRight = row * getBoardCellWidth() + getBoardCellWidth();
-            int xBottomRight = col * getBoardCellHeight() + getBoardCellHeight();
+    // Define the boundaries of a destination rectangle for the image
+            int yTopLeft = row * getBoardCellWidth() + 4;
+            int xTopLeft = col * getBoardCellHeight() + 4;
+            int yBottomRight = row * getBoardCellWidth() + getBoardCellWidth() - 4;
+            int xBottomRight = col * getBoardCellHeight() + getBoardCellHeight() - 4;
             if (mGame != null && mGame.getBoardOccupant(i) == TicTacToeGame.HUMAN_PLAYER) {
                 canvas.drawBitmap(mHumanBitmap,
                         null, // src

@@ -24,6 +24,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
     private boolean mGameOver;
     private boolean mFirstPlayer;
     private BoardView mBoardView;
+    private int hWin, cWin, tie;
 
     // for all the sounds we play
     private SoundPool mSounds;
@@ -40,6 +41,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
     // Text to be displayed
     private TextView mInfoTextView;
+    private TextView mWinTextView;
 
 
     @Override
@@ -47,26 +49,20 @@ public class AndroidTicTacToe extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        hWin = 0;
+        cWin = 0;
+        tie = 0;
+
         mBoardButtons = new Button[TicTacToeGame.BOARD_SIZE];
-//        mBoardButtons[0] = (Button) findViewById (R.id.one);
-//        mBoardButtons[1] = (Button) findViewById (R.id.two);
-//        mBoardButtons[2] = (Button) findViewById (R.id.three);
-//        mBoardButtons[3] = (Button) findViewById (R.id.four);
-//        mBoardButtons[4] = (Button) findViewById (R.id.five);
-//        mBoardButtons[5] = (Button) findViewById (R.id.six);
-//        mBoardButtons[6] = (Button) findViewById (R.id.seven);
-//        mBoardButtons[7] = (Button) findViewById (R.id.eight);
-//        mBoardButtons[8] = (Button) findViewById (R.id.nine);
-//        mNewGameB = (Button) findViewById(R.id.newGame);
-
-        // Listen for touches on the board
-
 
         mInfoTextView = (TextView) findViewById (R.id.information);
+        mWinTextView = (TextView) findViewById (R.id.winstats);
 
         mGame = new TicTacToeGame ();
         mBoardView = (BoardView) findViewById(R.id.board);
         mBoardView.setGame(mGame);
+
+        // Listen for touches on the board
         mBoardView.setOnTouchListener(mTouchListener);
 
         mFirstPlayer = false;
@@ -91,6 +87,8 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
         //Human goes first
         mInfoTextView.setText(R.string.turn_human);
+
+        mWinTextView.setText("You: " + hWin + " Cpu: " + cWin + " Tie: " + tie);
 
         /*
         if (mFirstPlayer)
@@ -233,13 +231,29 @@ public class AndroidTicTacToe extends ActionBarActivity {
                 if (winner == 0)
                     mInfoTextView.setText(R.string.turn_human);
                 else if (winner == 1)
+                {
                     mInfoTextView.setText(R.string.result_tie);
+                    tie++;
+                }
+
                 else if (winner == 2)
+                {
                     mInfoTextView.setText(R.string.result_human_wins);
+                    hWin++;
+                }
+
                 else
+                {
                     mInfoTextView.setText(R.string.result_computer_wins);
+                    cWin++;
+                }
+
                 if (winner > 0)
+                {
                     mGameOver = true;
+                    mWinTextView.setText("You: " + hWin + " Cpu: " + cWin + " Tie: " + tie);
+                }
+
             }
 
 // So we aren't notified of continued events when finger is moved
@@ -290,7 +304,11 @@ public class AndroidTicTacToe extends ActionBarActivity {
                 mBoardView.invalidate(); //Board needs to be redrawn
 
                 // soundID, leftVolume, rightVolume, priority, loop, rate
-                mSounds.play(mHumanMoveSoundID, 1, 1, 1, 0, 1);
+                if (player == mGame.HUMAN_PLAYER)
+                    mSounds.play(mHumanMoveSoundID, 1, 1, 1, 0, 1);
+                else
+                    mSounds.play(mComputerMoveSoundID, 1, 1, 1, 0, 1);
+
                 return true;
             }
             return false;
@@ -306,7 +324,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
 // 0 is the "the sample-rate converter quality. Currently has no effect. Use 0 for the default."
         mHumanMoveSoundID = mSounds.load(this, R.raw.press, 1);
 // Context, id of resource, priority (currently no effect)
-        mComputerMoveSoundID = mSounds.load(this, R.raw.press, 1);
+        mComputerMoveSoundID = mSounds.load(this, R.raw.ai_press, 1);
     }
     @Override
     protected void onPause() {
@@ -317,11 +335,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
             mSounds = null;
         }
     }
-
-
-
-
-
 
 
 }
