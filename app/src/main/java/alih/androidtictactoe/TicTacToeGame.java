@@ -57,9 +57,13 @@ public class TicTacToeGame {
     * @param player - The HUMAN_PLAYER or COMPUTER_PLAYER
     * @param location - The location (0-8) to place the move
     */
-    public void setMove(char player, int location){
+    public boolean setMove(char player, int location){
         if (mBoard[location] == OPEN_SLOT)
+        {
             mBoard[location] = player;
+            return true;
+        }
+        return false;
     }
 
     public DifficultyLevel getDifficultyLevel() {
@@ -142,7 +146,7 @@ public class TicTacToeGame {
         }
         else if (mDifficultyLevel == DifficultyLevel.Medium)
         {
-            move = getBlockingMove ();
+            move = getWinningMove ();
             if (move == -1)
                 move = getRandomMove ();
         }
@@ -208,5 +212,10 @@ public class TicTacToeGame {
             }
         }
         return -1;
+    }
+
+    char getBoardOccupant(int i)
+    {
+        return mBoard[i];
     }
 }
