@@ -25,6 +25,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
     private boolean mFirstPlayer;
     private BoardView mBoardView;
     private int hWin, cWin, tie;
+    private char mTurn;
 
     // for all the sounds we play
     private SoundPool mSounds;
@@ -54,21 +55,48 @@ public class AndroidTicTacToe extends ActionBarActivity {
         tie = 0;
 
         mBoardButtons = new Button[TicTacToeGame.BOARD_SIZE];
-
         mInfoTextView = (TextView) findViewById (R.id.information);
         mWinTextView = (TextView) findViewById (R.id.winstats);
-
         mGame = new TicTacToeGame ();
         mBoardView = (BoardView) findViewById(R.id.board);
         mBoardView.setGame(mGame);
-
         // Listen for touches on the board
         mBoardView.setOnTouchListener(mTouchListener);
-
         mFirstPlayer = false;
 
-        startNewGame ();
+        if (savedInstanceState == null)
+        {
+            mTurn = TicTacToeGame.HUMAN_PLAYER;
+            startNewGame ();
+        }
+        else
+        {
+            mGame.setBoardState(savedInstanceState.getCharArray("board"));
+            mGameOver = savedInstanceState.getBoolean("mGameOver");
+            mTurn = savedInstanceState.getChar("mTurn");
+//            mGoesFirst = savedInstanceState.getChar("mGoesFirst");
+            mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
+            hWin = savedInstanceState.getInt("hWin");
+            cWin = savedInstanceState.getInt("cWin");
+            tie = savedInstanceState.getInt("tie");
+            displayScores();
+//            startComputerDelay();
+        }
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putCharArray("board", mGame.getBoardState());
+        outState.putBoolean("mGameOver", mGameOver);
+        outState.putInt("hWin", Integer.valueOf(hWin));
+        outState.putInt("cWin", Integer.valueOf(cWin));
+        outState.putInt("tie", Integer.valueOf(tie));
+        outState.putCharSequence("info", mInfoTextView.getText());
+        outState.putChar("mTurn", mTurn);
+//        outState.putChar("mGoesFirst", mGoesFirst);
     }
 
     // Set up the game board
@@ -83,12 +111,10 @@ public class AndroidTicTacToe extends ActionBarActivity {
         mBoardView.invalidate(); // Leads to a redraw of the board view
 //        mNewGameB.setOnClickListener (new NewGameClickListener());
 
-
-
         //Human goes first
         mInfoTextView.setText(R.string.turn_human);
 
-        mWinTextView.setText("You: " + hWin + " Cpu: " + cWin + " Tie: " + tie);
+        displayScores();
 
         /*
         if (mFirstPlayer)
@@ -99,6 +125,9 @@ public class AndroidTicTacToe extends ActionBarActivity {
         */
     }
 
+    private void displayScores(){
+        mWinTextView.setText("You: " + hWin + " Cpu: " + cWin + " Tie: " + tie);
+    }
 
     protected Dialog onCreateDialog(int id) {
         Dialog dialog = null;
@@ -151,20 +180,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
         return dialog;
     }
 
-
-
-/*
-    private void setCMove(char player, int location) {
-
-        mGame.setMove(player, location);
-        mBoardButtons[location].setEnabled(false);
-        mBoardButtons[location].setText(String.valueOf(player));
-        if (player == TicTacToeGame.HUMAN_PLAYER)
-            mBoardButtons[location].setTextColor(Color.rgb(0, 200, 0));
-        else
-            mBoardButtons[location].setTextColor(Color.rgb(200, 0, 0));
-    }
-*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -198,16 +213,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
         return super.onOptionsItemSelected (item);
     }
-
-/*
-    // New Game click. Can this be combined into the other click listener?
-    private class NewGameClickListener implements View.OnClickListener {
-        public void onClick (View view)
-        {
-            startNewGame();
-        }
-    }
-*/
 
     // Listen for touches on the board
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -261,42 +266,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
         }
     };
 
-    /*
-    // Handles clicks on the game board buttons
-    private class ButtonClickListener implements View.OnClickListener {
-        int location;
-        public ButtonClickListener (int location) {
-            this.location = location;
-        }
-
-        public void onClick (View view) {
-            if (mBoardButtons[location].isEnabled() && !mGameOver) {
-                setMove(TicTacToeGame.HUMAN_PLAYER, location);
-
-                // If no winner yet, let the computer make a move
-                int winner = mGame.checkForWinner();
-                if (winner == 0) {
-                    mInfoTextView.setText(R.string.turn_computer);
-                    int move = mGame.getComputerMove();
-                    setMove (TicTacToeGame.COMPUTER_PLAYER, move);
-                    winner = mGame.checkForWinner();
-                }
-
-                if (winner == 0)
-                    mInfoTextView.setText(R.string.turn_human);
-                else if (winner == 1)
-                    mInfoTextView.setText(R.string.result_tie);
-                else if (winner == 2)
-                    mInfoTextView.setText(R.string.result_human_wins);
-                else
-                    mInfoTextView.setText(R.string.result_computer_wins);
-                if (winner > 0)
-                    mGameOver = true;
-            }
-        }
-        */
-
-
         private boolean setMove(char player, int location) {
 
             if (mGame.setMove(player, location))
@@ -335,6 +304,4 @@ public class AndroidTicTacToe extends ActionBarActivity {
             mSounds = null;
         }
     }
-
-
 }

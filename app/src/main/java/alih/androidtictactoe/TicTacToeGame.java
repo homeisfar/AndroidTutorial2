@@ -39,13 +39,11 @@ public class TicTacToeGame {
 
         // Seed the random number generator
         mRand = new Random();
-
     }
 
 
         /** Clear the board of all X's and O's by setting all spots to OPEN_SPOT. */
     public void clearBoard (){
-
         for (int i = 0; i < BOARD_SIZE; i++) {
             mBoard[i] = OPEN_SLOT;
         }
@@ -218,4 +216,13 @@ public class TicTacToeGame {
     {
         return mBoard[i];
     }
+
+    public char[] getBoardState() {
+        return mBoard;
+    }
+
+    public void setBoardState(char []board) {
+        mBoard = board;
+    }
+
 }

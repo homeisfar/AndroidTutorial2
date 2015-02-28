@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding = "utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal">
+
+    <alih.androidtictactoe.BoardView
+        android:id="@+id/board"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="35dp"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/information"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="Player turn"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/winstats"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="Winner data here"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+</LinearLayout>
