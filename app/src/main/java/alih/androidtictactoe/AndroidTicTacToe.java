@@ -38,14 +38,9 @@ public class AndroidTicTacToe extends ActionBarActivity {
     static final int DIALOG_QUIT_ID = 1;
     private static final String TAG = "TicTacToeGame";
 
-    // Buttons making up the game board
-    private Button mBoardButtons[];
-    private Button mNewGameB;
-
     // Text to be displayed
     private TextView mInfoTextView;
     private TextView mWinTextView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +51,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
         cWin = 0;
         tie = 0;
 
-        mBoardButtons = new Button[TicTacToeGame.BOARD_SIZE];
         mInfoTextView = (TextView) findViewById (R.id.information);
         mWinTextView = (TextView) findViewById (R.id.winstats);
         mGame = new TicTacToeGame ();
@@ -71,6 +65,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
         hWin = mPrefs.getInt("hWin", 0);
         cWin = mPrefs.getInt("cWin", 0);
         tie = mPrefs.getInt("tie", 0);
+        mGame.setDifficultyLevel(TicTacToeGame.DifficultyLevel.values()[mPrefs.getInt("difficulty", 0)]);
 
         if (savedInstanceState == null)
         {
@@ -84,13 +79,9 @@ public class AndroidTicTacToe extends ActionBarActivity {
             mTurn = savedInstanceState.getChar("mTurn");
 //            mGoesFirst = savedInstanceState.getChar("mGoesFirst");
             mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
-//            hWin = savedInstanceState.getInt("hWin");
-//            cWin = savedInstanceState.getInt("cWin");
-//            tie = savedInstanceState.getInt("tie");
             displayScores();
 //            startComputerDelay();
         }
-
     }
 
     @Override
@@ -99,9 +90,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
         outState.putCharArray("board", mGame.getBoardState());
         outState.putBoolean("mGameOver", mGameOver);
-//        outState.putInt("hWin", Integer.valueOf(hWin));
-//        outState.putInt("cWin", Integer.valueOf(cWin));
-//        outState.putInt("tie", Integer.valueOf(tie));
         outState.putCharSequence("info", mInfoTextView.getText());
         outState.putChar("mTurn", mTurn);
 //        outState.putChar("mGoesFirst", mGoesFirst);
@@ -143,6 +131,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
         ed.putInt("hWin", hWin);
         ed.putInt("cWin", cWin);
         ed.putInt("tie", tie);
+        ed.putInt("difficulty", mGame.getDifficultyLevel().ordinal());
         ed.apply();
     }
 
@@ -205,7 +194,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-//        menu.add("New Game");
         return true;
     }
 
