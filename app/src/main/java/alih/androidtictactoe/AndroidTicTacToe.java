@@ -3,6 +3,7 @@ package alih.androidtictactoe;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -26,6 +27,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
     private BoardView mBoardView;
     private int hWin, cWin, tie;
     private char mTurn;
+    private SharedPreferences mPrefs;
 
     // for all the sounds we play
     private SoundPool mSounds;
@@ -64,6 +66,12 @@ public class AndroidTicTacToe extends ActionBarActivity {
         mBoardView.setOnTouchListener(mTouchListener);
         mFirstPlayer = false;
 
+        mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
+
+        hWin = mPrefs.getInt("hWin", 0);
+        cWin = mPrefs.getInt("cWin", 0);
+        tie = mPrefs.getInt("tie", 0);
+
         if (savedInstanceState == null)
         {
             mTurn = TicTacToeGame.HUMAN_PLAYER;
@@ -76,9 +84,9 @@ public class AndroidTicTacToe extends ActionBarActivity {
             mTurn = savedInstanceState.getChar("mTurn");
 //            mGoesFirst = savedInstanceState.getChar("mGoesFirst");
             mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
-            hWin = savedInstanceState.getInt("hWin");
-            cWin = savedInstanceState.getInt("cWin");
-            tie = savedInstanceState.getInt("tie");
+//            hWin = savedInstanceState.getInt("hWin");
+//            cWin = savedInstanceState.getInt("cWin");
+//            tie = savedInstanceState.getInt("tie");
             displayScores();
 //            startComputerDelay();
         }
@@ -91,9 +99,9 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
         outState.putCharArray("board", mGame.getBoardState());
         outState.putBoolean("mGameOver", mGameOver);
-        outState.putInt("hWin", Integer.valueOf(hWin));
-        outState.putInt("cWin", Integer.valueOf(cWin));
-        outState.putInt("tie", Integer.valueOf(tie));
+//        outState.putInt("hWin", Integer.valueOf(hWin));
+//        outState.putInt("cWin", Integer.valueOf(cWin));
+//        outState.putInt("tie", Integer.valueOf(tie));
         outState.putCharSequence("info", mInfoTextView.getText());
         outState.putChar("mTurn", mTurn);
 //        outState.putChar("mGoesFirst", mGoesFirst);
@@ -123,6 +131,19 @@ public class AndroidTicTacToe extends ActionBarActivity {
             setCMove(TicTacToeGame.COMPUTER_PLAYER, move);
         }
         */
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Save the current scores
+        SharedPreferences.Editor ed = mPrefs.edit();
+        ed.putInt("hWin", hWin);
+        ed.putInt("cWin", cWin);
+        ed.putInt("tie", tie);
+        ed.apply();
     }
 
     private void displayScores(){
@@ -209,6 +230,13 @@ public class AndroidTicTacToe extends ActionBarActivity {
         {
             showDialog (DIALOG_QUIT_ID);
             return true;
+        }
+        if (id == R.id.reset)
+        {
+            hWin = 0;
+            cWin = 0;
+            tie = 0;
+            startNewGame ();
         }
 
         return super.onOptionsItemSelected (item);
