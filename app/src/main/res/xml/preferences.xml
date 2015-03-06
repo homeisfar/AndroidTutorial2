@@ -6,6 +6,7 @@
         android:title="Sound"
         android:defaultValue="true"
         android:summary="Turn the sound on or off" />
+
     <EditTextPreference
         android:key="victory_message"
         android:summary=""
@@ -19,5 +20,4 @@
         android:defaultValue="@string/difficulty_expert"
         android:entries="@array/list_difficulty_level"
         android:entryValues="@array/list_difficulty_level" />
-
 </PreferenceScreen>
