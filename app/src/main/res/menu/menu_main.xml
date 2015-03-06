@@ -5,10 +5,14 @@
  android:icon="@drawable/new_game"
  app:showAsAction="ifRoom"/>
 
- <item android:id="@+id/ai_difficulty"
+ <!--item android:id="@+id/ai_difficulty"
  android:title="Difficulty"
  android:icon="@drawable/difficulty"
- app:showAsAction="ifRoom"/>
+ app:showAsAction="ifRoom"/-->
+
+<item android:id="@+id/settings"
+    android:title="Quit"
+    />
 
  <item android:id="@+id/quit"
  android:title="Quit"
