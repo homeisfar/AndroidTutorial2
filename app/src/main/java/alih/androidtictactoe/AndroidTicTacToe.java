@@ -276,34 +276,35 @@ public class AndroidTicTacToe extends ActionBarActivity {
                     setMove (TicTacToeGame.COMPUTER_PLAYER, move);
                     winner = mGame.checkForWinner();
                 }
-
                 if (winner == 0)
                     mInfoTextView.setText(R.string.turn_human);
                 else if (winner == 1)
                 {
                     mInfoTextView.setText(R.string.result_tie);
                     tie++;
+                    prepDownloadImageActivity(1, getString(R.string.result_tie));
                 }
-
                 else if (winner == 2)
                 {
                     String defaultMessage = getResources().getString(R.string.result_human_wins);
                     mInfoTextView.setText(mPrefs.getString("victory_message", defaultMessage));
                     hWin++;
+                    String victory_message = mPrefs.getString("victory_message", defaultMessage);
+                    prepDownloadImageActivity(2, victory_message);
                 }
-
                 else
                 {
-                    mInfoTextView.setText(R.string.result_computer_wins);
+                    String defaultMessage = getResources().getString(R.string.result_computer_wins);
+                    mInfoTextView.setText(mPrefs.getString("loss_message", defaultMessage));
                     cWin++;
+                    String loss_message = mPrefs.getString("loss_message", defaultMessage);
+                    prepDownloadImageActivity(3, loss_message);
                 }
-
                 if (winner > 0)
                 {
                     mGameOver = true;
                     mWinTextView.setText("You: " + hWin + " Cpu: " + cWin + " Tie: " + tie);
                 }
-
             }
 
 // So we aren't notified of continued events when finger is moved
@@ -328,7 +329,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
             return false;
         }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -348,5 +348,12 @@ public class AndroidTicTacToe extends ActionBarActivity {
             mSounds.release();
             mSounds = null;
         }
+    }
+
+    private void prepDownloadImageActivity(int winner, String message){
+        Intent intent = new Intent(this, DownloadImage.class);
+        intent.putExtra("winner", winner);
+        intent.putExtra("message", message);
+        startActivity(intent);
     }
 }

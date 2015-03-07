@@ -18,5 +18,15 @@
     <string name="quit_question">Exit app?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="title_activity_download_image">DownloadImage</string>
+
+    <!--New strings for the async background downloading -->
+    <string name="downloading_image">Downloading Image From Web...</string>
+<string name="no_network_connection">This device is currently not connected to the Internet...Image
+cannot be downloaded...</string>
+    <string name="url_loser">http://www.cs.utexas.edu/~joeliven/cs371m/t6/loser_image.jpg</string>
+    <string name="url_winner">http://www.cs.utexas.edu/~joeliven/cs371m/t6/winner_image.jpg</string>
+    <string name="url_tie">http://www.cs.utexas.edu/~joeliven/cs371m/t6/tie_image.jpg</string>
+    <string name="download_complete">Download Complete</string>
 
 </resources>
