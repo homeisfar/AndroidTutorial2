@@ -5,7 +5,7 @@ package alih.androidtictactoe;
  *
  * Edits to the game logic to make it compatible with Android
  *
- * Added difficulty options
+ * Added difficulty options not initially present
  */
 
 /* TicTacToeConsole.java

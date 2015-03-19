@@ -31,7 +31,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
     private SharedPreferences mPrefs;
     private boolean mSoundOn;
 
-    // for all the sounds we play
+    // for all the sounds we play, even though the human and CPU sounds play almost simultaneously
     private SoundPool mSounds;
     private int mHumanMoveSoundID;
     private int mComputerMoveSoundID;
@@ -68,7 +68,11 @@ public class AndroidTicTacToe extends ActionBarActivity {
         cWin = mPrefs.getInt("cWin", 0);
         tie = mPrefs.getInt("tie", 0);
         mGame.setDifficultyLevel(TicTacToeGame.DifficultyLevel.values()[mPrefs.getInt("difficulty", 0)]);
-//TODO:?? Make sure Step 6 from page 5 isn't gonna come back and bite me here.
+
+        /* If the game begins without a bundled state, that means this device has never played
+           this version of TTT before. If so, start a new game. If there are saved preferences,
+           load them in. This means stats will be saved until reset from within the app itself.
+         */
         if (savedInstanceState == null)
         {
             mSoundOn = true;
@@ -81,13 +85,12 @@ public class AndroidTicTacToe extends ActionBarActivity {
             mGameOver = savedInstanceState.getBoolean("mGameOver");
             mTurn = savedInstanceState.getChar("mTurn");
             mSoundOn = savedInstanceState.getBoolean("mSoundOn");
-//            mGoesFirst = savedInstanceState.getChar("mGoesFirst");
             mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
             displayScores();
-//            startComputerDelay();
         }
     }
 
+    /* Bundled up to allow for rotating the device */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -97,11 +100,9 @@ public class AndroidTicTacToe extends ActionBarActivity {
         outState.putCharSequence("info", mInfoTextView.getText());
         outState.putChar("mTurn", mTurn);
         outState.putBoolean("mSoundOn", mSoundOn);
-//        outState.putChar("mGoesFirst", mGoesFirst);
     }
 
     // Set up the game board
-
     private void startNewGame (){
         mGame.clearBoard ();
 
@@ -110,20 +111,11 @@ public class AndroidTicTacToe extends ActionBarActivity {
 
         // reset the board
         mBoardView.invalidate(); // Leads to a redraw of the board view
-//        mNewGameB.setOnClickListener (new NewGameClickListener());
 
-        //Human goes first
+        //Human (now always) goes first
         mInfoTextView.setText(R.string.turn_human);
 
         displayScores();
-
-        /*
-        if (mFirstPlayer)
-        {
-            int move = mGame.getComputerMove();
-            setCMove(TicTacToeGame.COMPUTER_PLAYER, move);
-        }
-        */
     }
 
     @Override
@@ -148,34 +140,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         switch (id) {
-          /*  case DIALOG_DIFFICULTY_ID:
-                builder.setTitle(R.string.difficulty_choose);
-                final CharSequence[] levels = {
-                        getResources().getString(R.string.difficulty_easy),
-                        getResources().getString(R.string.difficulty_medium),
-                        getResources().getString(R.string.difficulty_expert)};
-
-
-                // selected is the radio button that should be selected.
-
-                int selected = mGame.getDifficultyLevel().ordinal();
-
-                builder.setSingleChoiceItems(levels, selected,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int item) {
-                                dialog.dismiss(); // Close dialog
-
-                                mGame.setDifficultyLevel(TicTacToeGame.DifficultyLevel.values()[item]);
-
-                                // Display the selected difficulty level
-                                Toast.makeText(getApplicationContext(), levels[item],
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                dialog = builder.create();
-
-                break;*/
-
         case DIALOG_QUIT_ID:
         // Create the quit confirmation dialog
 
@@ -188,9 +152,8 @@ public class AndroidTicTacToe extends ActionBarActivity {
                 })
                 .setNegativeButton(R.string.no, null);
         dialog = builder.create();
-
         break;
-    }
+        }
         return dialog;
     }
 
@@ -213,12 +176,6 @@ public class AndroidTicTacToe extends ActionBarActivity {
             startNewGame ();
             return true;
         }
-        /*
-        if (id == R.id.ai_difficulty)
-        {
-            showDialog (DIALOG_DIFFICULTY_ID);
-            return true;
-        }*/
         if (id == R.id.settings)
         {
             startActivityForResult (new Intent(this, Settings.class), 0);
@@ -333,7 +290,7 @@ public class AndroidTicTacToe extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         mSounds = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
-// 2 = maximum sounds ot play at the same time,
+// 2 = maximum sounds to play at the same time,
 // AudioManager.STREAM_MUSIC is the stream type typically used for games
 // 0 is the "the sample-rate converter quality. Currently has no effect. Use 0 for the default."
         mHumanMoveSoundID = mSounds.load(this, R.raw.press, 1);

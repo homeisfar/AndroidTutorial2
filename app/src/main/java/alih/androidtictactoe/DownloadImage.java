@@ -54,7 +54,7 @@ public class DownloadImage extends ActionBarActivity {
         }else if (winner == 3){
             urlString = getString(R.string.url_loser);
             mWinnerMessage.setText(message);
-        }//end if else
+        }
 
         //check to see if device is connected to the internet before proceeding to download image:
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -65,7 +65,7 @@ public class DownloadImage extends ActionBarActivity {
         } else {
             // display error:
             mDownloadingMessage.setText(R.string.no_network_connection);
-        }//end if else
+        }
     }
 
     @Override
@@ -101,7 +101,7 @@ public class DownloadImage extends ActionBarActivity {
                 url = new URL(params[0]);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-            }//end try catch block
+            }
 
             HttpURLConnection urlConnection = null;
             if(url != null){
@@ -109,28 +109,27 @@ public class DownloadImage extends ActionBarActivity {
                     urlConnection = (HttpURLConnection) url.openConnection();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }//end try catch block
-            }//end if
+                }
+            }
 
             if(urlConnection != null){
                 try {
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    returnImage = BitmapFactory.decodeStream(in); //note, this is not a return statement…the variable
-                                                                //is named ‘returnImage’
+                    returnImage = BitmapFactory.decodeStream(in);
+
                 }catch (IOException e) {
                     e.printStackTrace();
                 }finally {
                     urlConnection.disconnect();
-                }//end try catch finally block
-            }//end if
+                }
+            }
             return returnImage;
-        }//end doInBackground method
+        }
         protected void onPostExecute(Bitmap result) {
             if(result != null){
                 mImageView.setImageBitmap(result);
                 mDownloadingMessage.setText(R.string.download_complete);
-            }//end if
-        }//end onPostExecute method
-    }//end DownloadImageTask private inner Async Task Class.
-}//end DownloadImage Class.
-//}
+            }
+        }
+    }
+}
