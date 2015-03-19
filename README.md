@@ -3,7 +3,7 @@ Make a simple Android Tic Tac Toe
 
 It's true! The Conan O'Brien v. Steve Buscemi Tic Tac Toe that everyone has been waiting for on Android finally exists!
 
-This app was largely written as a tutorial for Android, so while it is just the classic came of TTT, there are a number of important things that happen here which required learning. They include:
+This app was largely written as a tutorial for Android, so while it is just the classic game of TTT, there are a number of important things that happen here which required learning. They include:
 
 - How to use intents to start new activities
 - How to store data in a Bundle to be able to handle things like rotating the device and displaying a landscape view
